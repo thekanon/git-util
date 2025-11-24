@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Git Branch & Sync Tool</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1>Git Branch & Sync Tool (Node + .env)</h1>
+    <p class="small">
+      이 도구는 실제 git 명령을 바로 실행하지 않고,<br />
+      터미널에 그대로 붙여넣어 사용할 수 있는 명령어 텍스트를 생성합니다.<br />
+      티켓명 / 작업명 / 사번 / sync 옵션은 localStorage에 자동 저장·복원됩니다.
+    </p>
+
+    <section>
+      <h2>공통 입력</h2>
+
+      <label for="ticket">티켓명</label>
+      <input id="ticket" type="text" placeholder="예: MKGPFPJT-11920" />
+
+      <label for="work">작업명</label>
+      <input
+        id="work"
+        type="text"
+        placeholder="예: 이벤트 수정화면 원패스 생성 버튼 추가"
+      />
+
+      <label for="employee">사번</label>
+      <input id="employee" type="text" placeholder="예: p205219" />
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>기능 1. 브랜치 생성 명령어</h2>
+      <p class="small">
+        pre-stage / qa-stage / develop 기반 feature 브랜치를 생성하고,<br />
+        origin에 바로 push (--set-upstream 포함) 하는 명령어를 만듭니다.
+      </p>
+      <button id="btnBranches">브랜치 생성 명령어 만들기</button>
+      <textarea id="branchesOutput" readonly></textarea>
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>기능 2. Sync 명령어</h2>
+      <p class="small">
+        feature 브랜치 기준으로 dev / qa 브랜치에 필요한 cherry-pick 명령어를
+        만들어줍니다.<br />
+        서버에서 git log를 실행하여 필요한 커밋 해시 목록을 계산한 뒤,<br />
+        아래 형태로 출력합니다:<br />
+        <code
+          >git checkout &lt;target-branch&gt;<br />git cherry-pick
+          &lt;HASH1&gt;<br />git cherry-pick &lt;HASH2&gt; ...</code
+        >
+      </p>
+
+      <label>
+        <input type="checkbox" id="syncDev" />
+        develop sync
+      </label>
+      <label>
+        <input type="checkbox" id="syncQa" />
+        qa sync
+      </label>
+
+      <button id="btnSync">Sync 명령어 만들기</button>
+      <textarea id="syncOutput" readonly></textarea>
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>기능 3. 로컬 브랜치 목록 + 삭제 명령어</h2>
+      <p class="small">
+        현재 저장소의 로컬 브랜치를 최근 커밋 날짜 순으로 조회하고,<br />
+        삭제하고 싶은 브랜치를 선택하면<br />
+        <code>git branch -D &lt;branch&gt;</code> 형태의 명령어를 만들어줍니다.
+      </p>
+
+      <button id="btnLoadBranches">로컬 브랜치 목록 불러오기</button>
+      <div id="branchList" class="branch-list">
+        <!-- 브랜치 체크박스 목록 -->
+        로컬 브랜치 목록을 불러오려면 위 버튼을 클릭하세요.
+      </div>
+
+      <button id="btnDeleteCmd">선택 브랜치 삭제 명령어 만들기</button>
+      <textarea id="branchDeleteOutput" readonly></textarea>
+    </section>
+
+    <script src="/js/app.js"></script>
+  </body>
+</html>
