@@ -1,12 +1,26 @@
 {
   "name": "git-branch-sync-tool",
   "version": "1.0.0",
+  "description": "Git 브랜치 생성 및 동기화 명령어를 자동으로 생성해주는 웹 도구",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
+  "keywords": [
+    "git",
+    "branch",
+    "sync",
+    "cherry-pick",
+    "git-tool",
+    "branch-management"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.19.2",
     "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
