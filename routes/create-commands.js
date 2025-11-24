@@ -1,5 +1,6 @@
 const express = require("express");
 const { getBranchNames } = require("../utils/git");
+const { generateAllBranchCommands } = require("../utils/branchCommands");
 
 const router = express.Router();
 
@@ -20,34 +21,15 @@ router.post("/", (req, res) => {
     employee
   );
 
-  const cmds = [];
-  cmds.push(`# 작업 경로: ${repoPath}`);
+  const commands = generateAllBranchCommands({
+    repoPath,
+    baseBranches,
+    baseBranch,
+    qaBranch,
+    devBranch,
+  });
 
-  // pre-stage 기반 feature 브랜치 생성
-  cmds.push(`# pre-stage 기반 feature 브랜치 생성`);
-  cmds.push(`git checkout ${baseBranches.preStage}`);
-  cmds.push(`git pull`);
-  cmds.push(`git checkout -b ${baseBranch}`);
-  cmds.push(`git push --set-upstream origin ${baseBranch}\n`);
-
-  // qa-stage 기반 feature 브랜치 생성
-  cmds.push(`# qa-stage 기반 feature 브랜치 생성`);
-  cmds.push(`git checkout ${baseBranches.qaStage}`);
-  cmds.push(`git pull`);
-  cmds.push(`git checkout -b ${qaBranch}`);
-  cmds.push(`git push --set-upstream origin ${qaBranch}\n`);
-
-  // develop 기반 feature 브랜치 생성
-  cmds.push(`# develop 기반 feature 브랜치 생성`);
-  cmds.push(`git checkout ${baseBranches.develop}`);
-  cmds.push(`git pull`);
-  cmds.push(`git checkout -b ${devBranch}`);
-  cmds.push(`git push --set-upstream origin ${devBranch}\n`);
-
-  cmds.push(`git checkout ${baseBranch}`);
-  cmds.push(`git branch`);
-
-  res.json({ ok: true, commands: cmds.join("\n") });
+  res.json({ ok: true, commands });
 });
 
 module.exports = router;

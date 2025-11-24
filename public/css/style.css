@@ -91,3 +91,18 @@ textarea {
   white-space: nowrap;
 }
 
+select {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+button.danger {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+
+button.danger:hover {
+  background: #c82333;
+  border-color: #bd2130;
+}
+

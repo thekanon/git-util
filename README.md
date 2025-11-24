@@ -5,10 +5,12 @@ Git 브랜치 생성 및 동기화 명령어를 자동으로 생성해주는 웹
 ## 주요 기능
 
 1. **브랜치 생성 명령어 생성**
+
    - pre-stage, qa-stage, develop 기반 feature 브랜치를 자동 생성
    - origin에 push하는 명령어까지 포함
 
 2. **Sync 명령어 생성**
+
    - feature 브랜치의 변경사항을 dev/qa 브랜치로 cherry-pick하는 명령어 생성
    - 서버에서 git log를 실행하여 필요한 커밋 해시를 자동 계산
 
@@ -75,4 +77,3 @@ MIT License
 ## 기여하기
 
 이슈나 Pull Request를 환영합니다!
-
