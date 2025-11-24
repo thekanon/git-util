@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "dev 또는 qa가 필요합니다" });
   }
 
-  const { repoPath } = req.app.locals.config;
+  const { repoPath, baseBranches } = req.app.locals.config;
   const { baseBranch, qaBranch, devBranch } = getBranchNames(
     ticket,
     work,
@@ -32,6 +32,7 @@ router.post("/", async (req, res) => {
       qaBranch,
       devBranch,
       targets,
+      sourceBranch: baseBranches.preStage,
     });
 
     res.json({ ok: true, commands });
