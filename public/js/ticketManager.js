@@ -134,26 +134,40 @@ function saveCurrentTicket() {
   const tickets = getTickets();
   const currentIndex = getCurrentTicketIndex();
 
-  if (
+  // 동일한 티켓명이 있는지 찾기
+  const existingIndex = tickets.findIndex(
+    (t) => t.ticket === current.ticket
+  );
+
+  if (existingIndex !== -1) {
+    // 동일한 티켓명이 있으면 업데이트
+    tickets[existingIndex] = {
+      ...current,
+      createdAt: tickets[existingIndex].createdAt,
+    };
+    saveTickets(tickets);
+    updateTicketSelect();
+    // 업데이트된 티켓 선택
+    getElement("ticketSelect").value = existingIndex;
+    saveCurrentTicketIndex(existingIndex);
+  } else if (
     currentIndex !== null &&
     currentIndex >= 0 &&
     currentIndex < tickets.length
   ) {
-    // 기존 티켓 업데이트
+    // 현재 선택된 티켓이 있으면 업데이트
     tickets[currentIndex] = {
       ...current,
       createdAt: tickets[currentIndex].createdAt,
     };
+    saveTickets(tickets);
+    updateTicketSelect();
   } else {
     // 새 티켓 추가
     tickets.unshift(current);
-  }
-
-  saveTickets(tickets);
-  updateTicketSelect();
-
-  // 새로 추가된 경우 첫 번째 항목 선택
-  if (currentIndex === null && tickets.length > 0) {
+    saveTickets(tickets);
+    updateTicketSelect();
+    // 새로 추가된 경우 첫 번째 항목 선택
     getElement("ticketSelect").value = 0;
     saveCurrentTicketIndex(0);
   }
