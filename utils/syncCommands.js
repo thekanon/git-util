@@ -21,28 +21,27 @@ async function generateSyncFor({
 }) {
   try {
     // 1. baseBranch가 생성된 이후의 커밋만 가져오기 (sourceBranch에는 없고 baseBranch에만 있는 커밋)
-    const baseBranchCmd = `git log --reverse --no-merges --format=%H ${sourceBranch}..${baseBranch}`;
+    // 2. --cherry-pick 옵션으로 타겟 브랜치에 이미 체리픽된 커밋은 자동으로 제외
+    //    (커밋 해시가 달라도 동일한 변경사항이면 제외됨)
+    const baseBranchCmd = `git log --reverse --cherry-pick --right-only --no-merges --format=%H ${targetBranch}...${baseBranch}`;
     const baseResult = await runCommand(baseBranchCmd, repoPath);
     const baseHashes = baseResult.stdout
       .split("\n")
       .map((x) => x.trim())
       .filter(Boolean);
 
-    // 2. 타겟 브랜치의 모든 커밋 가져오기
-    const targetBranchCmd = `git log --reverse --no-merges --format=%H ${targetBranch}`;
-    const targetResult = await runCommand(targetBranchCmd, repoPath);
-    const targetHashes = targetResult.stdout
-      .split("\n")
-      .map((x) => x.trim())
-      .filter(Boolean);
-
-    // 3. 타겟 브랜치에 이미 있는 커밋을 Set으로 변환 (빠른 조회를 위해)
-    const targetHashesSet = new Set(targetHashes);
-
-    // 4. baseBranch 생성 이후 커밋 중 타겟 브랜치에 없는 커밋만 필터링
-    const neededHashes = baseHashes.filter(
-      (hash) => !targetHashesSet.has(hash)
+    // baseBranch 생성 이후 커밋만 필터링 (sourceBranch 이후 커밋)
+    const sourceBranchCmd = `git log --reverse --no-merges --format=%H ${sourceBranch}..${baseBranch}`;
+    const sourceResult = await runCommand(sourceBranchCmd, repoPath);
+    const sourceHashes = new Set(
+      sourceResult.stdout
+        .split("\n")
+        .map((x) => x.trim())
+        .filter(Boolean)
     );
+
+    // baseBranch 생성 이후 커밋 중 타겟 브랜치에 없는 커밋만 필터링
+    const neededHashes = baseHashes.filter((hash) => sourceHashes.has(hash));
 
     if (neededHashes.length === 0) {
       return [`# ${targetBranch} → cherry-pick할 신규 커밋 없음`, ""].join(
